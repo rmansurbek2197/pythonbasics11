@@ -6,9 +6,9 @@ class Employee:
     def calculate_bonus(self, bonus_percentage):
         return self.salary * bonus_percentage / 100
 
-    def calculate_payroll(self, bonus_percentage):
-        bonus = self.calculate_bonus(bonus_percentage)
-        return self.salary + bonus
+    def calculate_total_salary(self, bonus_percentage):
+        return self.salary + self.calculate_bonus(bonus_percentage)
+
 
 class PayrollSystem:
     def __init__(self):
@@ -20,12 +20,29 @@ class PayrollSystem:
     def calculate_total_payroll(self, bonus_percentage):
         total_payroll = 0
         for employee in self.employees:
-            total_payroll += employee.calculate_payroll(bonus_percentage)
+            total_payroll += employee.calculate_total_salary(bonus_percentage)
         return total_payroll
 
+
+class Manager(Employee):
+    def __init__(self, name, salary, bonus_percentage):
+        super().__init__(name, salary)
+        self.bonus_percentage = bonus_percentage
+
+    def calculate_bonus(self, bonus_percentage):
+        return super().calculate_bonus(self.bonus_percentage)
+
+
+class Developer(Employee):
+    def __init__(self, name, salary):
+        super().__init__(name, salary)
+
+
 payroll_system = PayrollSystem()
-employee1 = Employee("John Doe", 5000)
-employee2 = Employee("Jane Doe", 6000)
-payroll_system.add_employee(employee1)
-payroll_system.add_employee(employee2)
+payroll_system.add_employee(Manager("John Doe", 5000, 10))
+payroll_system.add_employee(Developer("Jane Doe", 4000))
+payroll_system.add_employee(Manager("Bob Smith", 6000, 15))
 print(payroll_system.calculate_total_payroll(10))
+print(payroll_system.employees[0].calculate_bonus(10))
+print(payroll_system.employees[1].calculate_bonus(10))
+print(payroll_system.employees[2].calculate_bonus(15))
